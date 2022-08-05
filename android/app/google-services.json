@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "404179305601",
+    "project_id": "myyel-design-email",
+    "storage_bucket": "myyel-design-email.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404179305601:android:44f968758bf34f1bb63980",
+        "android_client_info": {
+          "package_name": "com.myyel.myyel_design_email"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "404179305601-l38ns8qjl2te0tqkuvb28loi8ceace2a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAafqiuOVjq_Lsf2sdrFnw1Zs8O00-H_7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "404179305601-l38ns8qjl2te0tqkuvb28loi8ceace2a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

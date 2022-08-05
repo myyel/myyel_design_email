@@ -1,128 +1,174 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:myyel_design_email/mail_list.dart';
 import 'package:myyel_design_email/main_view_model.dart';
+import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
   final _formKey = GlobalKey<FormState>();
-  final String text = "";
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _mailTextEditingController =
+      TextEditingController();
+  final TextEditingController _cityTextEditingController =
+      TextEditingController();
+
+  MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      useInheritedMediaQuery: true,
-      home: GestureDetector(
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
-          body: Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                opacity: .6,
-                image: AssetImage("assets/images/logo3.PNG"),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(
-                  flex: 11,
-                ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    Expanded(
-                      flex: 10,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[900],
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+      SystemUiOverlay.bottom,
+    ]);
+    return StreamProvider(
+      create: (_) =>
+          FirebaseFirestore.instance.collection("mailData").snapshots(),
+      initialData: null,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        useInheritedMediaQuery: true,
+        home: FutureBuilder(
+          future: _initialization,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(
+                child: Text("Beklenmeyen bir hata oluştu"),
+              );
+            } else if (snapshot.hasData) {
+              return GestureDetector(
+                onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                child: Scaffold(
+                  body: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black,
+                      image: DecorationImage(
+                        opacity: .6,
+                        image: AssetImage("assets/images/logo3.PNG"),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Spacer(
+                          flex: 9,
                         ),
-                        child: Form(
-                          key: _formKey,
-                          child: TextFormField(
-                            controller: _textEditingController,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: const InputDecoration(
-                              constraints: BoxConstraints(maxHeight: 45),
-                              focusedBorder: InputBorder.none,
-                              focusColor: Colors.white30,
-                              border: OutlineInputBorder(),
-                              hintStyle: TextStyle(color: Colors.white30),
-                              hintText: "Email",
-                              filled: true,
+                        Row(
+                          children: [
+                            const Spacer(),
+                            Expanded(
+                              flex: 10,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[900],
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
+                                        controller: _mailTextEditingController,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 14),
+                                        decoration: const InputDecoration(
+                                          constraints:
+                                              BoxConstraints(maxHeight: 45),
+                                          focusedBorder: InputBorder.none,
+                                          focusColor: Colors.white30,
+                                          border: OutlineInputBorder(),
+                                          hintStyle:
+                                              TextStyle(color: Colors.white30),
+                                          hintText: "Email",
+                                          filled: true,
+                                        ),
+                                      ),
+                                      TextFormField(
+                                        controller: _cityTextEditingController,
+                                        keyboardType: TextInputType.text,
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 14),
+                                        decoration: const InputDecoration(
+                                          constraints:
+                                              BoxConstraints(maxHeight: 45),
+                                          focusedBorder: InputBorder.none,
+                                          focusColor: Colors.white30,
+                                          border: OutlineInputBorder(),
+                                          hintStyle:
+                                              TextStyle(color: Colors.white30),
+                                          hintText: "Şehir",
+                                          filled: true,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            Expanded(
+                              flex: 4,
+                              child: SizedBox(
+                                height: 85,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.resolveWith(
+                                            (states) =>
+                                                const Color(0xff88623d)),
+                                  ),
+                                  onPressed: () {
+                                    _mailTextEditingController.clear();
+                                    MainViewModel().addMailAddress();
+                                  },
+                                  child: const Text(
+                                    "Ekle",
+                                    style: TextStyle(
+                                      color: Color(0xfff0e3d3),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                        const Spacer(),
+                        Expanded(
+                          flex: 2,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const MailList()));
+                            },
+                            child: const Text(
+                              "Mail Listesi",
+                              style: const TextStyle(color: Color(0xfff0e3d3)),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    const Spacer(),
-                    Expanded(
-                      flex: 4,
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith(
-                                (states) => const Color(0xff88623d)),
-                          ),
-                          onPressed: () {
-                            MainViewModel()
-                                .sendMail(_textEditingController.text, context);
-                            _textEditingController.clear();
-                          },
-                          child: const Text(
-                            "Gönder",
-                            style: TextStyle(
-                              color: Color(0xfff0e3d3),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-                const Spacer(),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    text,
-                    style: const TextStyle(color: Color(0xfff0e3d3)),
                   ),
                 ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "Mail Düzenle",
-                            style: TextStyle(color: Color(0xfff0e3d3)),
-                          )),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Mail Listesi",
-                          style: TextStyle(color: Color(0xfff0e3d3)),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
+              );
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
         ),
       ),
     );
