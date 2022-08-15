@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:myyel_design_email/mail_list.dart';
-import 'package:myyel_design_email/main_view_model.dart';
+import 'package:myyel_design_email/view_models/main_view_model.dart';
 import 'package:provider/provider.dart';
+
+import 'views/mail_list.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,8 +130,12 @@ class MyApp extends StatelessWidget {
                                                 const Color(0xff88623d)),
                                   ),
                                   onPressed: () {
+                                    MainViewModel().addMailAddress(
+                                      _mailTextEditingController.text,
+                                      _cityTextEditingController.text,
+                                    );
                                     _mailTextEditingController.clear();
-                                    MainViewModel().addMailAddress();
+                                    _cityTextEditingController.clear();
                                   },
                                   child: const Text(
                                     "Ekle",

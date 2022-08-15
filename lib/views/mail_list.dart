@@ -33,6 +33,7 @@ class _MailListState extends State<MailList> {
   Widget build(BuildContext context) {
     final dynamicHeight = MediaQuery.of(context).size.height;
     final dynamicWidth = MediaQuery.of(context).size.width;
+    final TextEditingController controller = TextEditingController();
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -95,6 +96,7 @@ class _MailListState extends State<MailList> {
               SizedBox(
                 width: dynamicWidth * .85,
                 child: TextFormField(
+                  controller: controller,
                   keyboardType: TextInputType.text,
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                   decoration: const InputDecoration(
@@ -117,6 +119,7 @@ class _MailListState extends State<MailList> {
                 height: dynamicHeight * .05,
               ),
 
+              /// Mail List
               Expanded(
                 child: SizedBox(
                   height: dynamicHeight * .75,
